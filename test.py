@@ -24,17 +24,15 @@ The tests are organized as follows:
 Make sure to maintain and update these tests as the application evolves to catch any regressions and ensure code quality.
 """
 
+import logging
 import os
-import unittest
-from unittest.mock import MagicMock, Mock, patch
+
 import pandas as pd
 import pytest
 import requests
 import responses
-import logging
-from app import patent_fetcher, custom_logging
 
-
+from app import custom_logging, patent_fetcher
 
 
 @responses.activate
@@ -51,17 +49,19 @@ def test_simple():
     print(resp.status_code)
     assert resp.json() == {"error": "not found"}
     assert resp.status_code == 404
-    
-    
+
+
 @pytest.fixture
 def uspto_search():
     return patent_fetcher.uspto_bulk_search("2001-01-01", "2022-01-31", 10)
+
 
 def test_request_data(uspto_search):
     results_dict = {}
     uspto_search.request_data(0, results_dict)
     assert len(results_dict) == 1
     assert len(results_dict[0]) == 10
+
 
 def test_request_data_no_results(uspto_search):
     results_dict = {}
@@ -74,10 +74,8 @@ def test_request_data_invalid_rows(uspto_search):
     uspto_search.request_data(-10, results_dict)
     print(uspto_search.request_data(-10, results_dict))
     assert len(results_dict) == 0
-    
-    
 
-    
+
 def test_map_request_data():
     uspto_search = patent_fetcher.uspto_bulk_search("2001-01-01", "2022-01-31", 10)
     result = uspto_search.map_request_data((0, {}))

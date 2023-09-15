@@ -4,8 +4,10 @@ import time
 from io import BytesIO
 from multiprocessing import Manager, Pool
 from typing import Optional, Tuple
+
 import pandas as pd
 import pycurl
+
 try:
     from app.custom_logging import get_logger
 except:
@@ -135,7 +137,7 @@ class uspto_bulk_search:
             results_list = [
                 sublist for sublist in results_dict.values() if sublist is not None
             ]
-            result =[x for sublist in results_list for x in sublist]
+            result = [x for sublist in results_list for x in sublist]
             df = pd.DataFrame(result)
             output_file_path = os.path.join(output_folder, "export.csv")
             df.to_csv(output_file_path)
