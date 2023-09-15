@@ -31,7 +31,6 @@ import pandas as pd
 import pytest
 import requests
 import responses
-
 from app import custom_logging, patent_fetcher
 
 
