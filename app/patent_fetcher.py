@@ -14,11 +14,13 @@ except:
     from custom_logging import get_logger
 
 my_logger = get_logger("uspto_bulk_search_download")
+# Constants should be all caps
 output_folder = "data"
 os.makedirs(output_folder, exist_ok=True)
 API_URL = "https://developer.uspto.gov/ibd-api/v1/application/grants"
 
 
+# Not using correct PEP8 python styinlg for class name.
 class uspto_bulk_search:
     def __init__(self, grantFromDate: str, grantToDate: str, rows: int) -> None:
         """Initialize a USPTO Bulk Search object.
@@ -119,6 +121,8 @@ class uspto_bulk_search:
                 ]
 
                 # Call request_data for the current start_size
+                # A threadpool would have been a better choice since it would ahve a
+                # lower memeory impact.
                 with Pool(num_processes) as p:
                     p.map(self.map_request_data, args_list)
 
@@ -131,6 +135,7 @@ class uspto_bulk_search:
                 )
 
                 # Increment start_size for the next iteration
+                # the * 100 doesn't seem correct. I assume it should be + 100 instead?
                 start_size += num_processes * 100
 
             # Convert the collected results into a DataFrame
@@ -139,8 +144,13 @@ class uspto_bulk_search:
             ]
             result = [x for sublist in results_list for x in sublist]
             df = pd.DataFrame(result)
+            # Writing all the data to one file like this is not ideal. If you wanted to
+            # say pull all the patents for 2 years, this file would be hundreds of GB in
+            # size which would make it impossible to open the file in a python process. It also makes the process of writing to it across different
+            # processes challenging.
             output_file_path = os.path.join(output_folder, "export.csv")
             df.to_csv(output_file_path)
+            # Why would there be duplicates?
             dup_rows = df[df.duplicated(keep=False)]
             my_logger.info(f"number of duplicated values: {dup_rows}")
             my_logger.info(f"number of data extracted: {len(df)}")
