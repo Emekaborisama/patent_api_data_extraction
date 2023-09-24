@@ -1,5 +1,5 @@
 # Patent_api_extraction
-Extract data from uspto patent DB usimg python curl
+speed up X2 api request data extraction (uspto patent DB) using python curl
 
 
 
