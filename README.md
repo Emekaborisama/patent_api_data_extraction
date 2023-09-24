@@ -1,5 +1,5 @@
 # Patent_api_extraction
-speed up X2 api request data extraction (uspto patent DB) using python curl
+speed up X2  request data extraction (uspto patent DB) using python curl and multiprocessing 
 
 
 
